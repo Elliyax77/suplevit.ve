@@ -1,0 +1,110 @@
+{
+  "restaurant": {
+    "name": "Suplevit",
+    "logoUrl": "",
+    "description": "Suplementos especializados para el desarrollo y bienestar de tus pequeños.",
+    "location": "Tienda Online",
+    "city": "Venezuela",
+    "isOpen": true,
+    "phone": "584244980621",
+    "greeting": "¡Hola Suplevit! Me gustaría hacer el siguiente pedido:",
+    "currency": "$"
+  },
+  "theme": {
+    "primaryColor": "#1e3a8a",
+    "secondaryColor": "#3b82f6",
+    "accentColor": "#fbbf24"
+  },
+  "categories": [
+    {
+      "id": "c1",
+      "name": "Catálogo de Suplementos",
+      "items": [
+        {
+          "id": "p1",
+          "name": "Culturelle Probiotics Kids",
+          "description": "Es un suplemento probiótico diario en formato de gomitas diseñado especialmente para niños. Está formulado con fibra vegetal y vitamina C para ayudar a mantener el equilibrio del sistema digestivo y apoyar la salud inmunológica, todo con un delicioso sabor a frutos rojos.",
+          "price": 19.99,
+          "image": "/images/1.png",
+          "badges": ["Recomendado por pediatras", "Vitamina C", "Apoyo digestivo", "60 gomitas"],
+          "conditions": ["Digestión", "Defensas"],
+          "customizable": false,
+          "keyIngredients": [
+            "Probióticos (Cepa Lactobacillus rhamnosus GG)",
+            "Vitamina C (Apoyo Inmune)",
+            "Fibra Vegetal (Inulina)"
+          ],
+          "benefitsList": [
+            "Restaura el equilibrio natural de bacterias buenas.",
+            "Mejora la digestión y reduce el malestar estomacal.",
+            "Fortalece las defensas naturales del cuerpo."
+          ],
+          "usageInstructions": "Masticar 1 gomita al día. Apto para niños a partir de los 3 años."
+        },
+        {
+          "id": "p2",
+          "name": "Triquetra L-Methylfolate 5-MTHF",
+          "description": "Es un suplemento dietético líquido y orgánico para niños que proporciona L-Metilfolato (5-MTHF) y vitamina B12 (Metilcobalamina). Viene en un práctico formato de gotas con dosis ajustable, rindiendo hasta 300 porciones por botella.",
+          "price": 24.99,
+          "image": "/images/2.png",
+          "badges": ["USDA Organic", "Dosis ajustable", "300 servicios", "Sabor frutos rojos"],
+          "conditions": ["Autismo", "TDAH", "Desarrollo Cognitivo"],
+          "customizable": false,
+          "keyIngredients": [
+            "L-Metilfolato (5-MTHF activo)",
+            "Vitamina B12 (Metilcobalamina)",
+            "Base de glicerina vegetal orgánica"
+          ],
+          "benefitsList": [
+            "Apoyo al desarrollo neurocognitivo.",
+            "Ayuda en la producción de glóbulos rojos.",
+            "Fórmula altamente absorbible y biodisponible."
+          ],
+          "usageInstructions": "Agitar bien. Dar 1 gota diaria mezclada con jugo, agua o directo en la boca."
+        },
+        {
+          "id": "p3",
+          "name": "Zollipops The Clean Teeth Pops",
+          "description": "Son unas deliciosas paletas sin azúcar conocidas como 'las paletas para dientes limpios'. Creadas como el premio ideal para después de comer, ayudan a mantener una sonrisa saludable. Vienen en una variedad de sabores frutales y son aptas para casi cualquier estilo de vida, siendo veganas, keto y amigables con las alergias.",
+          "price": 14.99,
+          "image": "/images/3.png",
+          "badges": ["0g de azúcar", "Keto", "Vegano", "Allergy Friendly", "Sin colorantes"],
+          "conditions": ["Salud Dental"],
+          "customizable": false,
+          "keyIngredients": [
+            "Eritritol y Xilitol (Endulzantes dentales)",
+            "Sirope de Isomalt",
+            "Saborizantes y colorantes naturales"
+          ],
+          "benefitsList": [
+            "Neutraliza los ácidos y equilibra el pH de la boca.",
+            "Ayuda a prevenir las caries y la placa bacteriana.",
+            "Delicioso sabor natural sin azúcar añadida."
+          ],
+          "usageInstructions": "Consumir una paleta después de cada comida o como merienda saludable."
+        },
+        {
+          "id": "p4",
+          "name": "Dr. Moritz Magnesium Citrate Kids",
+          "description": "Gomitas anti-estrés formuladas para apoyar la calma y la relajación de los niños.",
+          "price": 29.99,
+          "image": "/images/4.png",
+          "badges": ["100 mg de Magnesio", "Sin azúcar", "Anti-Estrés", "Apto para 2+ años", "60 gomitas"],
+          "conditions": ["Autismo", "TDAH", "Ansiedad y Estrés", "Sueño"],
+          "customizable": false,
+          "keyIngredients": [
+            "Citrato de Magnesio (Alta absorción)",
+            "Pectina cítrica",
+            "Sabores naturales a frambuesa"
+          ],
+          "benefitsList": [
+            "Promueve la calma y reduce el estrés.",
+            "Ayuda a regular los ciclos de sueño (mejor descanso).",
+            "Apoya la salud ósea y muscular."
+          ],
+          "usageInstructions": "Masticar 2 gomitas al día, preferiblemente 30 minutos antes de dormir."
+        }
+      ]
+    }
+  ]
+}

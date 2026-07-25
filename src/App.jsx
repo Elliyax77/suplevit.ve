@@ -1,0 +1,214 @@
+import React, { useState, useEffect } from 'react'
+import Papa from 'papaparse'
+import TopNav from './components/TopNav.jsx'
+import HeroSection from './components/HeroSection.jsx'
+import BenefitsSection from './components/BenefitsSection.jsx'
+import ProductCard from './components/ProductCard.jsx'
+import Cart from './components/Cart.jsx'
+import ProductPage from './components/ProductPage.jsx'
+import menuData from './data/menu.json'
+import './index.css'
+
+function App() {
+  const [cart, setCart] = useState([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [selectedCondition, setSelectedCondition] = useState(null)
+  const { restaurant, theme } = menuData
+  const [categories, setCategories] = useState(menuData.categories)
+  const [isLoading, setIsLoading] = useState(true)
+  const [exchangeRate, setExchangeRate] = useState(null);
+
+  useEffect(() => {
+    document.title = restaurant.name;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.svg';
+
+    fetch('https://ve.dolarapi.com/v1/dolares/oficial')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.promedio) {
+          setExchangeRate(data.promedio);
+        }
+      })
+      .catch(error => console.error('Error fetching BCV rate:', error));
+
+    setIsLoading(false);
+  }, []);
+
+  const computedRestaurant = { ...restaurant, isOpen: true, exchangeRate };
+  const allItems = categories.flatMap(c => c.items)
+
+  useEffect(() => {
+    if (theme && theme.primaryColor) {
+      document.documentElement.style.setProperty('--primary-color', theme.primaryColor)
+      document.documentElement.style.setProperty('--primary-hover', theme.primaryColor + 'cc')
+    }
+  }, [theme])
+
+  const handleProductClick = (item) => {
+    setSelectedItem(item)
+  }
+
+  const handleAddToCart = (details) => {
+    setCart(prev => {
+      const existingIndex = prev.findIndex(cartItem => 
+        cartItem.productId === details.productId &&
+        cartItem.notes === details.notes &&
+        JSON.stringify(cartItem.removedIngredients) === JSON.stringify(details.removedIngredients)
+      )
+
+      if (existingIndex >= 0) {
+        const newCart = [...prev]
+        newCart[existingIndex].quantity += details.quantity
+        return newCart
+      } else {
+        return [...prev, {
+          cartItemId: Date.now().toString(),
+          ...details
+        }]
+      }
+    })
+    setSelectedItem(null)
+  }
+
+  const getProductTotalQty = (productId) => {
+    return cart.reduce((total, cartItem) => {
+      if (cartItem.productId === productId) return total + cartItem.quantity
+      return total
+    }, 0)
+  }
+  
+  const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+  const handleUpdateCartItemQty = (cartItemId, change) => {
+    setCart(prev => {
+      return prev.map(item => {
+        if (item.cartItemId === cartItemId) {
+          return { ...item, quantity: item.quantity + change }
+        }
+        return item
+      }).filter(item => item.quantity > 0)
+    })
+  }
+
+  const handleRemoveCartItem = (cartItemId) => {
+    setCart(prev => prev.filter(item => item.cartItemId !== cartItemId))
+  }
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-container">
+      {!selectedItem && (
+        <TopNav 
+          cartCount={totalCartItems} 
+          onCartClick={() => setIsCartOpen(true)} 
+        />
+      )}
+      
+      {selectedItem ? (
+        <ProductPage 
+          item={selectedItem} 
+          currency={restaurant.currency}
+          exchangeRate={exchangeRate}
+          onClose={() => setSelectedItem(null)}
+          onAddToCart={handleAddToCart}
+        />
+      ) : (
+        <>
+          <div className="content-wrapper landing-mode" style={{ paddingTop: '80px' }}>
+            <HeroSection />
+            <BenefitsSection />
+
+            <main id="catalog" className="catalog-section">
+              <div className="catalog-header">
+                <h2>Explora por Condición</h2>
+                <p>Encuentra el suplemento ideal para las necesidades de tu pequeño.</p>
+                
+                <div className="conditions-filter">
+                  <button 
+                    className={`condition-pill ${!selectedCondition ? 'active' : ''}`}
+                    onClick={() => setSelectedCondition(null)}
+                  >
+                    Todos
+                  </button>
+                  {Array.from(new Set(categories.flatMap(cat => cat.items.flatMap(item => item.conditions || [])))).map(cond => (
+                    <button 
+                      key={cond}
+                      className={`condition-pill ${selectedCondition === cond ? 'active' : ''}`}
+                      onClick={() => setSelectedCondition(cond)}
+                    >
+                      {cond}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {categories.map(category => {
+                const filteredItems = selectedCondition 
+                  ? category.items.filter(item => item.conditions && item.conditions.includes(selectedCondition))
+                  : category.items;
+                
+                if (filteredItems.length === 0) return null;
+
+                return (
+                  <section key={category.id} className="category-section">
+                    <div className="product-list">
+                      {filteredItems.map(item => (
+                        <ProductCard 
+                          key={item.id} 
+                          item={item} 
+                          currency={restaurant.currency}
+                          cartQty={getProductTotalQty(item.id)}
+                          exchangeRate={exchangeRate}
+                          onClick={() => handleProductClick(item)}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )
+              })}
+            </main>
+            
+            <footer className="app-footer modern-app-footer">
+              <div className="footer-content">
+                <img src="/suplevit-logo.png" alt="Suplevit Logo" className="footer-logo" />
+                <p>Cuidando el futuro, hoy.</p>
+                <div className="footer-links">
+                  <a href="#">Términos</a>
+                  <a href="#">Privacidad</a>
+                  <a href="#">Contacto</a>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </>
+      )}
+
+      <Cart 
+        cart={cart} 
+        items={allItems} 
+        currency={restaurant.currency} 
+        restaurant={computedRestaurant} 
+        onUpdateQty={handleUpdateCartItemQty}
+        onRemoveItem={handleRemoveCartItem}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
+    </div>
+  )
+}
+
+export default App
