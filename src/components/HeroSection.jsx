@@ -35,7 +35,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className="hero-subtitle"
-          style={{ marginBottom: '60px', fontSize: '18px', maxWidth: '400px' }}
+          style={{ marginBottom: '30px', fontSize: '18px', maxWidth: '400px' }}
         >
           Descubre suplementos diseñados científicamente para impulsar el desarrollo y bienestar diario.
         </motion.p>
