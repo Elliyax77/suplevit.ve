@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock } from 'lucide-react';
 
 export default function ProductPage({ item, currency, exchangeRate, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
@@ -212,8 +212,11 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
               </div>
 
               {item.agotado ? (
-                <div style={{ display: 'flex', justifyContent: 'center', background: '#ef4444', color: 'white', padding: '16px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px' }}>
-                  ESTE PRODUCTO ESTÁ AGOTADO
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ef4444', color: 'white', padding: '12px 24px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px' }}>
+                    <Lock size={20} />
+                    ESTE PRODUCTO ESTÁ AGOTADO
+                  </div>
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: '16px' }}>
