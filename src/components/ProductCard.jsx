@@ -40,11 +40,13 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
                 }
               }}
               style={{ 
-                background: item.agotado ? '#ef4444' : 'var(--primary-color)',
-                color: 'white',
+                background: item.agotado ? '#ef4444' : '#facc15',
+                color: item.agotado ? 'white' : '#1e3a8a',
                 border: 'none',
                 width: '36px',
                 height: '36px',
+                minWidth: '36px',
+                flexShrink: 0,
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
