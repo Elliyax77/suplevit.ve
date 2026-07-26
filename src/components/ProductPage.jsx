@@ -112,18 +112,13 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
             {isDesktop && <div className="scroll-spacer" style={{ height: '100vh' }}></div>}
             <div className="product-info-container">
               {/* Badges / Quick info */}
-              {( (item.badges && item.badges.length > 0) || item.previousPrice ) && (
+              {item.badges && item.badges.length > 0 && (
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }} 
                   whileInView={{ opacity: 1, x: 0 }} 
                   viewport={{ once: true }}
                   className="product-detail-badges"
                 >
-                  {item.previousPrice && (
-                    <span className="badge-modern" style={{ backgroundColor: '#2563eb', color: '#ffffff', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '4px', border: '1px solid #60a5fa' }}>
-                      <Tag size={14} /> EN PROMOCIÓN
-                    </span>
-                  )}
                   {item.badges && item.badges.map((badge, idx) => (
                     <span key={idx} className="badge-modern">{badge}</span>
                   ))}
