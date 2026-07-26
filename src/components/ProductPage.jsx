@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock, Tag } from 'lucide-react';
 
 export default function ProductPage({ item, currency, exchangeRate, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
@@ -120,7 +120,9 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
                   className="product-detail-badges"
                 >
                   {item.previousPrice && (
-                    <span className="badge-modern" style={{ backgroundColor: '#fde047', color: '#dc2626', fontWeight: 'bold' }}>🔥 PROMOCIÓN</span>
+                    <span className="badge-modern" style={{ backgroundColor: '#2563eb', color: '#ffffff', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '4px', border: '1px solid #60a5fa' }}>
+                      <Tag size={14} /> EN PROMOCIÓN
+                    </span>
                   )}
                   {item.badges && item.badges.map((badge, idx) => (
                     <span key={idx} className="badge-modern">{badge}</span>
@@ -201,7 +203,7 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Precio Total:</span>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   {item.previousPrice && (
-                    <span style={{ textDecoration: 'line-through', color: 'rgba(255,255,255,0.7)', fontSize: '14px', marginBottom: '2px' }}>
+                    <span style={{ textDecoration: 'line-through', color: '#ef4444', fontSize: '15px', marginBottom: '2px', fontWeight: 'bold' }}>
                       {currency}{(item.previousPrice * quantity).toFixed(2)}
                     </span>
                   )}
