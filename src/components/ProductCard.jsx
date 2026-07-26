@@ -33,6 +33,8 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
             </button>
             
             <button 
+              className="btn-quick-add"
+              disabled={item.agotado}
               onClick={(e) => {
                 e.stopPropagation(); // prevent opening the modal
                 if (!item.agotado && onAddToCart) {

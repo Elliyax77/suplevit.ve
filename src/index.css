@@ -413,12 +413,20 @@ button {
   width: 100%;
 }
 
-.product-card:hover .btn-add {
+.btn-add:hover {
   background-color: #ffffff;
   color: #0F2540;
   transform: scale(1.05);
 }
 
+.btn-quick-add {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-quick-add:not(:disabled):hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
 .quantity-badge {
   background-color: var(--primary-color);
   color: var(--primary-text);
