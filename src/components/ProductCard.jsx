@@ -1,11 +1,15 @@
 import React from 'react';
+import { ShoppingCart, Plus, Lock } from 'lucide-react';
 
-export default function ProductCard({ item, currency, cartQty, onClick, exchangeRate }) {
+export default function ProductCard({ item, currency, cartQty, onClick, exchangeRate, onAddToCart }) {
   return (
     <div 
       className="product-card" 
       onClick={onClick} 
-      style={{ cursor: 'pointer' }}
+      style={{ 
+        cursor: 'pointer',
+        border: item.previousPrice ? '2px solid #facc15' : 'none'
+      }}
     >
       <div style={{ position: 'relative' }}>
         <img src={item.image} alt={item.name} className="product-image" loading="lazy" />
@@ -21,11 +25,43 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
             </span>
           </div>
           
-          <button className="btn-add" style={{ padding: '8px 16px', borderRadius: '99px', fontSize: '14px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontWeight: '600' }}>Ver producto</span>
-            </span>
-          </button>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button className="btn-add" style={{ padding: '8px 16px', borderRadius: '99px', fontSize: '14px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontWeight: '600' }}>Ver producto</span>
+              </span>
+            </button>
+            
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); // prevent opening the modal
+                if (!item.agotado && onAddToCart) {
+                  onAddToCart({ productId: item.id, quantity: 1, notes: '', removedIngredients: [] });
+                }
+              }}
+              style={{ 
+                background: item.agotado ? '#ef4444' : 'var(--primary-color)',
+                color: 'white',
+                border: 'none',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: item.agotado ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {item.agotado ? (
+                <Lock size={16} />
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '-2px' }}>
+                  <ShoppingCart size={14} />
+                  <Plus size={10} strokeWidth={3} style={{ marginLeft: '-2px', marginTop: '-8px' }} />
+                </div>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

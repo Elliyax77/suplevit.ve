@@ -185,6 +185,7 @@ function App() {
                           cartQty={getProductTotalQty(item.id)}
                           exchangeRate={exchangeRate}
                           onClick={() => handleProductClick(item)}
+                          onAddToCart={handleAddToCart}
                         />
                       ))}
                     </div>
