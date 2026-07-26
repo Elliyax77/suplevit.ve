@@ -196,9 +196,16 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Precio Total:</span>
-                <span style={{ fontSize: '24px', fontWeight: '900' }}>
-                  {currency}{(item.price * quantity).toFixed(2)}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                  {item.previousPrice && (
+                    <span style={{ textDecoration: 'line-through', color: 'rgba(255,255,255,0.7)', fontSize: '14px', marginBottom: '2px' }}>
+                      {currency}{(item.previousPrice * quantity).toFixed(2)}
+                    </span>
+                  )}
+                  <span style={{ fontSize: '24px', fontWeight: '900' }}>
+                    {currency}{(item.price * quantity).toFixed(2)}
+                  </span>
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: '16px' }}>

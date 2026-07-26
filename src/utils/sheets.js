@@ -34,11 +34,24 @@ export const fetchProductsFromSheet = (csvUrl) => {
               };
             }
 
+            let currentPrice = parseFloat(row.precio || row.price) || 0;
+            let promoPrice = parseFloat(row.promocion || row.promo) || null;
+            let previousPrice = null;
+
+            if (promoPrice && promoPrice < currentPrice) {
+              previousPrice = currentPrice;
+              currentPrice = promoPrice;
+            }
+
+            const isAgotado = (row.agotado || row.soldOut || '').toLowerCase().trim() === 'si' || (row.agotado || row.soldOut || '').toLowerCase().trim() === 'true';
+
             const item = {
               id: row.id || `p${index}`,
               name: (row.nombre || row.name || '').trim(),
               description: row.descripcion || row.description || '',
-              price: parseFloat(row.precio || row.price) || 0,
+              price: currentPrice,
+              previousPrice: previousPrice,
+              agotado: isAgotado,
               image: row.imagen || row.image || '',
               badges: (row.etiquetas || row.badges) ? (row.etiquetas || row.badges).split(',').map(i => i.trim()).filter(Boolean) : [],
               conditions: (row.condiciones || row.conditions) ? (row.condiciones || row.conditions).split(',').map(i => i.trim()).filter(Boolean) : [],
