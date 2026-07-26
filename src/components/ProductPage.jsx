@@ -112,14 +112,17 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
             {isDesktop && <div className="scroll-spacer" style={{ height: '100vh' }}></div>}
             <div className="product-info-container">
               {/* Badges / Quick info */}
-              {item.badges && item.badges.length > 0 && (
+              {( (item.badges && item.badges.length > 0) || item.previousPrice ) && (
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }} 
                   whileInView={{ opacity: 1, x: 0 }} 
                   viewport={{ once: true }}
                   className="product-detail-badges"
                 >
-                  {item.badges.map((badge, idx) => (
+                  {item.previousPrice && (
+                    <span className="badge-modern" style={{ backgroundColor: '#fde047', color: '#dc2626', fontWeight: 'bold' }}>🔥 PROMOCIÓN</span>
+                  )}
+                  {item.badges && item.badges.map((badge, idx) => (
                     <span key={idx} className="badge-modern">{badge}</span>
                   ))}
                 </motion.div>
@@ -208,17 +211,23 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <div className="quantity-controls-modern">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="btn-qty-mod">-</button>
-                  <span className="qty-value-mod">{quantity}</span>
-                  <button onClick={() => setQuantity(q => q + 1)} className="btn-qty-mod">+</button>
+              {item.agotado ? (
+                <div style={{ display: 'flex', justifyContent: 'center', background: '#ef4444', color: 'white', padding: '16px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px' }}>
+                  ESTE PRODUCTO ESTÁ AGOTADO
                 </div>
-                <button onClick={handleAdd} className="btn-add-modern" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                  <ShoppingCart size={20} />
-                  Añadir al Carrito
-                </button>
-              </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <div className="quantity-controls-modern">
+                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="btn-qty-mod">-</button>
+                    <span className="qty-value-mod">{quantity}</span>
+                    <button onClick={() => setQuantity(q => q + 1)} className="btn-qty-mod">+</button>
+                  </div>
+                  <button onClick={handleAdd} className="btn-add-modern" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <ShoppingCart size={20} />
+                    Añadir al Carrito
+                  </button>
+                </div>
+              )}
             </motion.div>
 
           </div>
