@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Papa from 'papaparse'
 import TopNav from './components/TopNav.jsx'
 import HeroSection from './components/HeroSection.jsx'
 import BenefitsSection from './components/BenefitsSection.jsx'
@@ -7,28 +6,25 @@ import ProductCard from './components/ProductCard.jsx'
 import Cart from './components/Cart.jsx'
 import ProductPage from './components/ProductPage.jsx'
 import menuData from './data/menu.json'
+import { fetchProductsFromSheet } from './utils/sheets.js'
 import './index.css'
+
+// Enlace CSV exportado de Google Sheets
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1baDr670CyHZFsE0Ql0GcQRo8RsoTpGp6LbMGD0mVhew/export?format=csv';
 
 function App() {
   const [cart, setCart] = useState([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
   const [selectedCondition, setSelectedCondition] = useState(null)
-  const { restaurant, theme } = menuData
+  const [restaurant, setRestaurant] = useState(menuData.restaurant)
+  const [theme, setTheme] = useState(menuData.theme)
   const [categories, setCategories] = useState(menuData.categories)
   const [isLoading, setIsLoading] = useState(true)
   const [exchangeRate, setExchangeRate] = useState(null);
 
   useEffect(() => {
-    document.title = restaurant.name;
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'icon';
-      document.head.appendChild(link);
-    }
-    link.href = '/favicon.svg';
-
+    // Obtener tasa BCV
     fetch('https://ve.dolarapi.com/v1/dolares/oficial')
       .then(response => response.json())
       .then(data => {
@@ -38,7 +34,22 @@ function App() {
       })
       .catch(error => console.error('Error fetching BCV rate:', error));
 
-    setIsLoading(false);
+    // Obtener productos del Sheet
+    fetchProductsFromSheet(SHEET_CSV_URL).then(data => {
+      setRestaurant(data.restaurant);
+      setTheme(data.theme);
+      setCategories(data.categories);
+      setIsLoading(false);
+      document.title = data.restaurant.name;
+    });
+
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = '/favicon.svg';
   }, []);
 
   const computedRestaurant = { ...restaurant, isOpen: true, exchangeRate };
