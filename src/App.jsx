@@ -24,8 +24,8 @@ function App() {
   const [exchangeRate, setExchangeRate] = useState(null);
 
   useEffect(() => {
-    // Obtener tasa BCV
-    fetch('https://ve.dolarapi.com/v1/dolares/oficial')
+    // Obtener tasa BCV Euro
+    fetch('https://ve.dolarapi.com/v1/euros')
       .then(response => response.json())
       .then(data => {
         if (data && data.promedio) {
