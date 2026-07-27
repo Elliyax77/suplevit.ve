@@ -105,7 +105,7 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
                 <span>Total a pagar</span>
                 <div style={{ textAlign: 'right' }}>
                   <div>{currency}{totalPrice.toFixed(2)}</div>
-                  {exchangeRate && <div style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '4px' }}>Bs {(totalPrice * exchangeRate).toFixed(2)}</div>}
+                  {exchangeRate && <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', marginTop: '4px', fontWeight: 'bold' }}>Bs {(totalPrice * exchangeRate).toFixed(2)}</div>}
                 </div>
               </div>
             </div>
