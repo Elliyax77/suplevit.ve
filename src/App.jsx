@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     // Obtener tasa BCV Euro
-    fetch('https://ve.dolarapi.com/v1/euros')
+    fetch('https://ve.dolarapi.com/v1/euros/oficial')
       .then(response => response.json())
       .then(data => {
         if (data && data.promedio) {
