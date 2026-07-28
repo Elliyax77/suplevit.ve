@@ -250,7 +250,7 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                     €{(item.priceEuro * quantity).toFixed(2)}
                   </span>
                   {item.pricePromoUsd > 0 && (
-                    <span style={{ fontSize: '14px', color: '#16a34a', fontWeight: 'bold' }}>
+                    <span style={{ fontSize: '14px', color: '#facc15', fontWeight: 'bold' }}>
                       Oferta divisas: ${(item.pricePromoUsd * quantity).toFixed(2)}
                     </span>
                   )}
