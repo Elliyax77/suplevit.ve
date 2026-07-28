@@ -27,11 +27,16 @@ export function generateWhatsAppLink(cart, items, formData, restaurant, totalPri
   message += `---------\n\n`;
   message += `*Resumen del pedido:*\n\n`;
 
+  const isUsdPayment = ['Efectivo', 'Zelle', 'Binance'].includes(formData.payment);
+  const currencySymbol = isUsdPayment ? '$' : '€';
+
   cart.forEach((cartItem) => {
     const item = items.find(i => i.id === cartItem.productId);
     if (item) {
-      const itemTotal = item.price * cartItem.quantity;
-      message += `*_${cartItem.quantity}x - ${item.name.toUpperCase()}_* (${restaurant.currency}${itemTotal.toFixed(2)})\n`;
+      const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
+      const itemCurrency = isUsdPayment && item.pricePromoUsd > 0 ? '$' : '€';
+      const itemTotal = itemActivePrice * cartItem.quantity;
+      message += `*_${cartItem.quantity}x - ${item.name.toUpperCase()}_* (${itemCurrency}${itemTotal.toFixed(2)})\n`;
       
       if (cartItem.removedIngredients && cartItem.removedIngredients.length > 0) {
         message += `   ${eCross} Sin: ${cartItem.removedIngredients.join(', ')}\n`;
@@ -44,10 +49,10 @@ export function generateWhatsAppLink(cart, items, formData, restaurant, totalPri
   });
 
   message += `\n${eTruck} *${envio}:* A confirmar\n`;
-  message += `${eMoney} *Total:* ${restaurant.currency}${totalPrice.toFixed(2)}`;
-  if (exchangeRate) {
+  message += `${eMoney} *Total:* ${currencySymbol}${totalPrice.toFixed(2)}`;
+  if (!isUsdPayment && exchangeRate) {
     message += ` (Bs. ${(totalPrice * exchangeRate).toFixed(2)})\n`;
-    message += `   Tasa BCV: Bs. ${exchangeRate} / USD\n`;
+    message += `   Tasa (Euro): Bs. ${exchangeRate} / EUR\n`;
   } else {
     message += `\n`;
   }

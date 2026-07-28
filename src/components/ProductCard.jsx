@@ -21,8 +21,13 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
         <div className="product-footer">
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <span className="product-price">
-              {currency}{item.price.toFixed(2)}
+              €{item.priceEuro.toFixed(2)}
             </span>
+            {item.pricePromoUsd > 0 && (
+              <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 'bold' }}>
+                Oferta divisas: ${item.pricePromoUsd.toFixed(2)}
+              </span>
+            )}
           </div>
           
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -34,16 +39,16 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
             
             <button 
               className="btn-quick-add"
-              disabled={item.agotado}
+              disabled={item.agotado || (cartQty >= item.stock)}
               onClick={(e) => {
                 e.stopPropagation(); // prevent opening the modal
-                if (!item.agotado && onAddToCart) {
+                if (!item.agotado && (cartQty < item.stock) && onAddToCart) {
                   onAddToCart({ productId: item.id, quantity: 1, notes: '', removedIngredients: [] });
                 }
               }}
               style={{ 
-                background: item.agotado ? '#ef4444' : '#facc15',
-                color: item.agotado ? 'white' : '#1e3a8a',
+                background: (item.agotado || cartQty >= item.stock) ? '#ef4444' : '#facc15',
+                color: (item.agotado || cartQty >= item.stock) ? 'white' : '#1e3a8a',
                 border: 'none',
                 width: '36px',
                 height: '36px',
@@ -53,10 +58,11 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: item.agotado ? 'not-allowed' : 'pointer'
+                cursor: (item.agotado || cartQty >= item.stock) ? 'not-allowed' : 'pointer',
+                opacity: (item.agotado || cartQty >= item.stock) ? 0.7 : 1
               }}
             >
-              {item.agotado ? (
+              {(item.agotado || cartQty >= item.stock) ? (
                 <Lock size={16} />
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', marginLeft: '-2px' }}>

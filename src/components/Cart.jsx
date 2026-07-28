@@ -13,11 +13,15 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
     payment: 'Efectivo'
   });
 
+  const isUsdPayment = ['Efectivo', 'Zelle', 'Binance'].includes(formData.payment);
+
   const totalItems = cart.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
   
   const totalPrice = cart.reduce((sum, cartItem) => {
     const item = items.find(i => i.id === cartItem.productId);
-    return sum + (item ? item.price * cartItem.quantity : 0);
+    if (!item) return sum;
+    const activePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
+    return sum + (activePrice * cartItem.quantity);
   }, 0);
 
   if (totalItems === 0) return null;
@@ -49,14 +53,17 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
               {cart.map((cartItem) => {
                 const item = items.find(i => i.id === cartItem.productId);
                 if (!item) return null;
+                const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
+                const priceCurrency = isUsdPayment && item.pricePromoUsd > 0 ? '$' : '€';
+
                 return (
                   <div key={cartItem.cartItemId} className="cart-item-row-container" style={{ borderBottom: '1px dashed var(--border-color)', paddingBottom: '12px' }}>
                     <div className="cart-item-row" style={{ alignItems: 'center' }}>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <span style={{ fontWeight: '600' }}>{item.name}</span>
                         <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                          {currency}{(item.price * cartItem.quantity).toFixed(2)}
-                          {exchangeRate && ` | Bs ${(item.price * cartItem.quantity * exchangeRate).toFixed(2)}`}
+                          {priceCurrency}{(itemActivePrice * cartItem.quantity).toFixed(2)}
+                          {(!isUsdPayment && exchangeRate) && ` | Bs ${(itemActivePrice * cartItem.quantity * exchangeRate).toFixed(2)}`}
                         </span>
                       </div>
                       
@@ -68,7 +75,13 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
                         >-</button>
                         <span style={{ fontWeight: '600', minWidth: '20px', textAlign: 'center' }}>{cartItem.quantity}</span>
                         <button 
-                          onClick={() => onUpdateQty(cartItem.cartItemId, 1)}
+                          onClick={() => {
+                            if (cartItem.quantity < item.stock) {
+                              onUpdateQty(cartItem.cartItemId, 1);
+                            } else {
+                              alert('Stock máximo alcanzado para este producto');
+                            }
+                          }}
                           style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: 'var(--bg-color)', fontWeight: 'bold', color: 'var(--text-primary)' }}
                         >+</button>
                         <button 
@@ -104,8 +117,8 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
               <div className="cart-item-row" style={{ fontWeight: 'bold', fontSize: '18px', marginTop: '16px', borderTop: '2px solid var(--border-color)', paddingTop: '16px' }}>
                 <span>Total a pagar</span>
                 <div style={{ textAlign: 'right' }}>
-                  <div>{currency}{totalPrice.toFixed(2)}</div>
-                  {exchangeRate && <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', marginTop: '4px', fontWeight: 'bold' }}>Bs {(totalPrice * exchangeRate).toFixed(2)}</div>}
+                  <div>{isUsdPayment ? '$' : '€'}{totalPrice.toFixed(2)}</div>
+                  {(!isUsdPayment && exchangeRate) && <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', marginTop: '4px', fontWeight: 'bold' }}>Bs {(totalPrice * exchangeRate).toFixed(2)}</div>}
                 </div>
               </div>
             </div>
@@ -190,7 +203,7 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
             <div className="form-group">
               <label className="form-label">Método de Pago</label>
               <div className="payment-grid">
-                {['Efectivo', 'Pago Móvil', 'Zelle', 'Punto de Venta'].map(method => (
+                {['Efectivo', 'Pago Móvil', 'Zelle', 'Binance', 'Punto de Venta'].map(method => (
                   <button 
                     key={method}
                     className={`payment-card ${formData.payment === method ? 'active' : ''}`}

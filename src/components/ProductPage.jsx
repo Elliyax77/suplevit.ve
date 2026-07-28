@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock, Tag } from 'lucide-react';
 
-export default function ProductPage({ item, currency, exchangeRate, onClose, onAddToCart }) {
+export default function ProductPage({ item, currency, exchangeRate, cartQty = 0, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -66,16 +66,27 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
               className="product-left-content"
               style={{ x: isDesktop ? xOffset : 0 }}
             >
-              <motion.div style={{ scale: imageScaleScroll, display: 'flex', justifyContent: 'center', width: '100%', padding: isDesktop ? 0 : '20px 0' }}>
-                <motion.img 
-                  initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
-                  animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                  transition={{ delay: 0.2, type: 'spring' }}
-                  src={item.image} 
-                  alt={item.name} 
-                  className="product-hero-img"
-                />
-              </motion.div>
+              <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', gap: '16px', padding: isDesktop ? 0 : '20px 0', paddingBottom: '20px', scrollbarWidth: 'none' }}>
+                <motion.div style={{ scrollSnapAlign: 'start', flexShrink: 0, width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <motion.img 
+                    initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
+                    animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                    transition={{ delay: 0.2, type: 'spring' }}
+                    src={item.image} 
+                    alt={item.name} 
+                    className="product-hero-img"
+                  />
+                </motion.div>
+                {item.nutritionImage && (
+                  <motion.div style={{ scrollSnapAlign: 'start', flexShrink: 0, width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <motion.img 
+                      src={item.nutritionImage} 
+                      alt="Tabla Nutricional" 
+                      className="product-hero-img"
+                    />
+                  </motion.div>
+                )}
+              </div>
               <motion.h1 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -112,18 +123,27 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
             {isDesktop && <div className="scroll-spacer" style={{ height: '100vh' }}></div>}
             <div className="product-info-container">
               {/* Badges / Quick info */}
-              {item.badges && item.badges.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }} 
-                  whileInView={{ opacity: 1, x: 0 }} 
-                  viewport={{ once: true }}
-                  className="product-detail-badges"
-                >
-                  {item.badges && item.badges.map((badge, idx) => (
-                    <span key={idx} className="badge-modern">{badge}</span>
-                  ))}
-                </motion.div>
-              )}
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }} 
+                whileInView={{ opacity: 1, x: 0 }} 
+                viewport={{ once: true }}
+                className="product-detail-badges"
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
+              >
+                {item.concentration && (
+                  <span className="badge-modern" style={{ background: '#e0e7ff', color: '#3730a3' }}>
+                    {item.concentration}
+                  </span>
+                )}
+                {item.services && (
+                  <span className="badge-modern" style={{ background: '#dcfce7', color: '#166534' }}>
+                    {item.services}
+                  </span>
+                )}
+                {item.badges && item.badges.map((badge, idx) => (
+                  <span key={idx} className="badge-modern">{badge}</span>
+                ))}
+              </motion.div>
 
               {/* Main Description */}
               <motion.p 
@@ -197,22 +217,22 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Precio Total:</span>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                  {item.previousPrice && (
-                    <span style={{ textDecoration: 'line-through', color: '#ef4444', fontSize: '15px', marginBottom: '2px', fontWeight: 'bold' }}>
-                      {currency}{(item.previousPrice * quantity).toFixed(2)}
+                  <span style={{ fontSize: '24px', fontWeight: '900' }}>
+                    €{(item.priceEuro * quantity).toFixed(2)}
+                  </span>
+                  {item.pricePromoUsd > 0 && (
+                    <span style={{ fontSize: '14px', color: '#16a34a', fontWeight: 'bold' }}>
+                      Oferta divisas: ${(item.pricePromoUsd * quantity).toFixed(2)}
                     </span>
                   )}
-                  <span style={{ fontSize: '24px', fontWeight: '900' }}>
-                    {currency}{(item.price * quantity).toFixed(2)}
-                  </span>
                 </div>
               </div>
 
-              {item.agotado ? (
+              {item.agotado || cartQty >= item.stock ? (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ef4444', color: 'white', padding: '12px 24px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px' }}>
                     <Lock size={20} />
-                    ESTE PRODUCTO ESTÁ AGOTADO
+                    {item.agotado ? 'ESTE PRODUCTO ESTÁ AGOTADO' : 'STOCK MÁXIMO ALCANZADO'}
                   </div>
                 </div>
               ) : (
@@ -220,7 +240,7 @@ export default function ProductPage({ item, currency, exchangeRate, onClose, onA
                   <div className="quantity-controls-modern">
                     <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="btn-qty-mod">-</button>
                     <span className="qty-value-mod">{quantity}</span>
-                    <button onClick={() => setQuantity(q => q + 1)} className="btn-qty-mod">+</button>
+                    <button onClick={() => setQuantity(q => Math.min(item.stock - cartQty, q + 1))} className="btn-qty-mod">+</button>
                   </div>
                   <button onClick={handleAdd} className="btn-add-modern" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                     <ShoppingCart size={20} />

@@ -13,6 +13,16 @@ export const fetchProductsFromSheet = (csvUrl) => {
       download: true,
       header: true,
       skipEmptyLines: true,
+      transformHeader: header => header.trim(), // Eliminar espacios al final
+      beforeFirstChunk: (chunk) => {
+        // La primera fila es "Suplevit", la segunda son los encabezados reales
+        // Removemos la primera línea del chunk inicial
+        const lines = chunk.split(/\r?\n/);
+        if (lines[0] && lines[0].startsWith('Suplevit')) {
+          lines.shift();
+        }
+        return lines.join('\n');
+      },
       complete: (results) => {
         try {
           const rawData = results.data;
@@ -22,9 +32,9 @@ export const fetchProductsFromSheet = (csvUrl) => {
           
           rawData.forEach((row, index) => {
             // Ignorar filas sin nombre de producto
-            if (!(row.nombre || row.name) || (row.nombre || row.name).trim() === '') return;
+            if (!row['Producto'] || row['Producto'].trim() === '') return;
 
-            const categoryName = row.categoria || row.category || 'Catálogo de Suplementos';
+            const categoryName = row['Categoría'] || 'General';
             
             if (!categoryMap[categoryName]) {
               categoryMap[categoryName] = {
@@ -34,31 +44,47 @@ export const fetchProductsFromSheet = (csvUrl) => {
               };
             }
 
-            let currentPrice = parseFloat(row.precio || row.price) || 0;
-            let promoPrice = parseFloat(row.promocion || row.promo) || null;
-            let previousPrice = null;
+            // Procesar precios
+            // Remover el símbolo $ o € y cambiar comas por puntos
+            const parsePrice = (priceStr) => {
+              if (!priceStr) return 0;
+              return parseFloat(priceStr.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+            };
 
-            if (promoPrice && promoPrice < currentPrice) {
-              previousPrice = currentPrice;
-              currentPrice = promoPrice;
-            }
+            const priceEuro = parsePrice(row['Precio Bs (tasa euro)']);
+            const pricePromoUsd = parsePrice(row['Precio (Efectivo-Zelle-Binance)']);
 
-            const isAgotado = (row.agotado || row.soldOut || '').toLowerCase().trim() === 'si' || (row.agotado || row.soldOut || '').toLowerCase().trim() === 'true';
+            const stock = parseInt(row['Cantidad'], 10) || 0;
+
+            // Procesar imagenes (pueden venir con ruta local como C:\...\imagen.png)
+            const extractFilename = (path) => {
+              if (!path) return '';
+              const parts = path.split(/[\/\\]/);
+              return parts[parts.length - 1];
+            };
+
+            const imageFile = extractFilename(row['Imagen sin fondo']);
+            const image = imageFile ? `/imagenes suplevit/${imageFile}` : '';
+            
+            const nutritionFile = extractFilename(row['Tabla Nutricional']);
+            const nutritionImage = nutritionFile ? `/tablas nutricionales/${nutritionFile}` : '';
 
             const item = {
-              id: row.id || `p${index}`,
-              name: (row.nombre || row.name || '').trim(),
-              description: row.descripcion || row.description || '',
-              price: currentPrice,
-              previousPrice: previousPrice,
-              agotado: isAgotado,
-              image: row.imagen || row.image || '',
-              badges: (row.etiquetas || row.badges) ? (row.etiquetas || row.badges).split(',').map(i => i.trim()).filter(Boolean) : [],
-              conditions: (row.condiciones || row.conditions) ? (row.condiciones || row.conditions).split(',').map(i => i.trim()).filter(Boolean) : [],
-              customizable: false,
-              keyIngredients: (row.ingredientes || row.keyIngredients) ? (row.ingredientes || row.keyIngredients).split(';').map(i => i.trim()).filter(Boolean) : [],
-              benefitsList: (row.beneficios || row.benefitsList) ? (row.beneficios || row.benefitsList).split(';').map(i => i.trim()).filter(Boolean) : [],
-              usageInstructions: row.instrucciones || row.usageInstructions || ''
+              id: `p${index}`,
+              name: row['Producto'].trim(),
+              brand: '', // TODO: Pendiente por resolver con columna Marca
+              stock: stock,
+              priceEuro: priceEuro,
+              pricePromoUsd: pricePromoUsd,
+              price: priceEuro, // Usaremos el priceEuro como principal
+              description: row['Descripción'] || '',
+              image: image,
+              nutritionImage: nutritionImage,
+              concentration: row['Concentración'] && row['Concentración'].trim() !== '-' ? row['Concentración'].trim() : null,
+              services: row['Servicios'] && row['Servicios'].trim() !== '-' ? row['Servicios'].trim() : null,
+              flavor: row['Sabor'] && row['Sabor'].trim() !== '-' ? row['Sabor'].trim() : null,
+              presentation: row['Presentación'] && row['Presentación'].trim() !== '-' ? row['Presentación'].trim() : null,
+              badges: row['Etiquetas'] ? row['Etiquetas'].split(',').map(i => i.trim()).filter(Boolean) : []
             };
             
             categoryMap[categoryName].items.push(item);

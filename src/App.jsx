@@ -10,7 +10,7 @@ import { fetchProductsFromSheet } from './utils/sheets.js'
 import './index.css'
 
 // Enlace CSV exportado de Google Sheets
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1baDr670CyHZFsE0Ql0GcQRo8RsoTpGp6LbMGD0mVhew/export?format=csv';
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ThpuQvGzyBjZNuZr72oJLmY3pTKRDVoorzMU2RiaRi8/export?format=csv';
 
 function App() {
   const [cart, setCart] = useState([])
@@ -134,6 +134,7 @@ function App() {
           item={selectedItem} 
           currency={restaurant.currency}
           exchangeRate={exchangeRate}
+          cartQty={getProductTotalQty(selectedItem.id)}
           onClose={() => setSelectedItem(null)}
           onAddToCart={handleAddToCart}
         />
@@ -145,7 +146,7 @@ function App() {
 
             <main id="catalog" className="catalog-section">
               <div className="catalog-header">
-                <h2>Explora por Condición</h2>
+                <h2>Explora por Categoría</h2>
                 <p>Encuentra el suplemento ideal para las necesidades de tu pequeño.</p>
                 
                 <div className="conditions-filter">
@@ -155,22 +156,22 @@ function App() {
                   >
                     Todos
                   </button>
-                  {Array.from(new Set(categories.flatMap(cat => cat.items.flatMap(item => item.conditions || [])))).map(cond => (
+                  {categories.map(cat => (
                     <button 
-                      key={cond}
-                      className={`condition-pill ${selectedCondition === cond ? 'active' : ''}`}
-                      onClick={() => setSelectedCondition(cond)}
+                      key={cat.name}
+                      className={`condition-pill ${selectedCondition === cat.name ? 'active' : ''}`}
+                      onClick={() => setSelectedCondition(cat.name)}
                     >
-                      {cond}
+                      {cat.name}
                     </button>
                   ))}
                 </div>
               </div>
 
               {categories.map(category => {
-                const filteredItems = selectedCondition 
-                  ? category.items.filter(item => item.conditions && item.conditions.includes(selectedCondition))
-                  : category.items;
+                if (selectedCondition && category.name !== selectedCondition) return null;
+                
+                const filteredItems = category.items;
                 
                 if (filteredItems.length === 0) return null;
 
