@@ -65,10 +65,10 @@ export const fetchProductsFromSheet = (csvUrl) => {
             };
 
             const imageFile = extractFilename(row['Imagen sin fondo']);
-            const image = imageFile ? encodeURI(`/imagenes suplevit/${imageFile}`) : '';
+            const image = imageFile ? `/imagenes%20suplevit/${encodeURIComponent(imageFile)}` : '';
             
             const nutritionFile = extractFilename(row['Tabla Nutricional']);
-            const nutritionImage = nutritionFile ? encodeURI(`/tablas nutricionales/${nutritionFile}`) : '';
+            const nutritionImage = nutritionFile ? `/tablas%20nutricionales/${encodeURIComponent(nutritionFile)}` : '';
 
             const item = {
               id: `p${index}`,
