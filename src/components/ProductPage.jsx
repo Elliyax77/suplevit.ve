@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock, Tag } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Leaf, Clock, ShoppingCart, ChevronDown, Lock, Tag, Info, Image as ImageIcon } from 'lucide-react';
 
 export default function ProductPage({ item, currency, exchangeRate, cartQty = 0, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+  const [showNutrition, setShowNutrition] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const containerRef = useRef(null);
   
@@ -66,25 +67,52 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
               className="product-left-content"
               style={{ x: isDesktop ? xOffset : 0 }}
             >
-              <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', width: '100%', gap: '16px', padding: isDesktop ? 0 : '20px 0', paddingBottom: '20px', scrollbarWidth: 'none' }}>
-                <motion.div style={{ scrollSnapAlign: 'start', flexShrink: 0, width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: isDesktop ? 0 : '20px 0', paddingBottom: '20px' }}>
+                <motion.div style={{ scale: imageScaleScroll, display: 'flex', justifyContent: 'center', width: '100%', height: '300px' }}>
                   <motion.img 
+                    key={showNutrition ? 'nutrition' : 'product'}
                     initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
                     animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                    transition={{ delay: 0.2, type: 'spring' }}
-                    src={item.image} 
+                    transition={{ type: 'spring' }}
+                    src={showNutrition && item.nutritionImage ? item.nutritionImage : item.image} 
                     alt={item.name} 
                     className="product-hero-img"
+                    style={{ objectFit: 'contain', width: '100%', height: '100%' }}
                   />
                 </motion.div>
+                
                 {item.nutritionImage && (
-                  <motion.div style={{ scrollSnapAlign: 'start', flexShrink: 0, width: '100%', display: 'flex', justifyContent: 'center' }}>
-                    <motion.img 
-                      src={item.nutritionImage} 
-                      alt="Tabla Nutricional" 
-                      className="product-hero-img"
-                    />
-                  </motion.div>
+                  <button 
+                    onClick={() => setShowNutrition(!showNutrition)}
+                    style={{ 
+                      marginTop: '24px', 
+                      background: 'rgba(255,255,255,0.2)', 
+                      border: '1px solid rgba(255,255,255,0.4)', 
+                      color: 'white', 
+                      padding: '10px 20px', 
+                      borderRadius: '24px', 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      fontSize: '14px',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    {showNutrition ? (
+                      <>
+                        <ImageIcon size={18} />
+                        Ver Producto
+                      </>
+                    ) : (
+                      <>
+                        <Info size={18} />
+                        Ver Tabla Nutricional
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
               <motion.h1 
