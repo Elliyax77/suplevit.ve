@@ -23,11 +23,7 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
             <span className="product-price">
               €{item.priceEuro.toFixed(2)}
             </span>
-            {item.pricePromoUsd > 0 && (
-              <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 'bold' }}>
-                Oferta divisas: ${item.pricePromoUsd.toFixed(2)}
-              </span>
-            )}
+
           </div>
           
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
