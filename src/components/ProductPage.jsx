@@ -81,39 +81,6 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                   />
                 </motion.div>
                 
-                {item.nutritionImage && (
-                  <button 
-                    onClick={() => setShowNutrition(!showNutrition)}
-                    style={{ 
-                      marginTop: '24px', 
-                      background: 'rgba(255,255,255,0.2)', 
-                      border: '1px solid rgba(255,255,255,0.4)', 
-                      color: 'white', 
-                      padding: '10px 20px', 
-                      borderRadius: '24px', 
-                      cursor: 'pointer', 
-                      fontWeight: 'bold',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '14px',
-                      backdropFilter: 'blur(10px)',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    {showNutrition ? (
-                      <>
-                        <ImageIcon size={18} />
-                        Ver Producto
-                      </>
-                    ) : (
-                      <>
-                        <Info size={18} />
-                        Ver Tabla Nutricional
-                      </>
-                    )}
-                  </button>
-                )}
               </div>
               <motion.h1 
                 initial={{ y: 20, opacity: 0 }}
@@ -150,6 +117,40 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
           <div className="product-split-right">
             {isDesktop && <div className="scroll-spacer" style={{ height: '100vh' }}></div>}
             <div className="product-info-container">
+              {item.nutritionImage && (
+                <button 
+                  onClick={() => setShowNutrition(!showNutrition)}
+                  className="btn-nutrition-toggle"
+                  style={{ 
+                    marginBottom: '16px', 
+                    background: 'var(--primary-color)', 
+                    color: 'white', 
+                    padding: '10px 20px', 
+                    borderRadius: '24px', 
+                    cursor: 'pointer', 
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '14px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  {showNutrition ? (
+                    <>
+                      <ImageIcon size={18} />
+                      Ver Producto Principal
+                    </>
+                  ) : (
+                    <>
+                      <Info size={18} />
+                      Ver Tabla Nutricional
+                    </>
+                  )}
+                </button>
+              )}
+
               {/* Badges / Quick info */}
               <motion.div 
                 initial={{ opacity: 0, x: -20 }} 
