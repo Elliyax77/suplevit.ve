@@ -56,18 +56,19 @@ export const fetchProductsFromSheet = (csvUrl) => {
 
             const stock = parseInt(row['Cantidad'], 10) || 0;
 
-            // Procesar imagenes (pueden venir con ruta local como C:\...\imagen.png)
+            // Procesar imagenes (pueden venir con ruta local como C:\...\imagen.png y con comillas extras)
             const extractFilename = (path) => {
               if (!path) return '';
-              const parts = path.split(/[\/\\]/);
+              const cleanPath = path.replace(/['"]/g, ''); // Eliminar comillas dobles o simples extra
+              const parts = cleanPath.split(/[\/\\]/);
               return parts[parts.length - 1];
             };
 
             const imageFile = extractFilename(row['Imagen sin fondo']);
-            const image = imageFile ? `/imagenes suplevit/${imageFile}` : '';
+            const image = imageFile ? encodeURI(`/imagenes suplevit/${imageFile}`) : '';
             
             const nutritionFile = extractFilename(row['Tabla Nutricional']);
-            const nutritionImage = nutritionFile ? `/tablas nutricionales/${nutritionFile}` : '';
+            const nutritionImage = nutritionFile ? encodeURI(`/tablas nutricionales/${nutritionFile}`) : '';
 
             const item = {
               id: `p${index}`,
