@@ -17,16 +17,11 @@ export default function BenefitsSection() {
           transition={{ duration: 0.6 }}
           style={{ 
             maxWidth: '800px', 
-            margin: '0 auto', 
-            background: 'rgba(255, 255, 255, 0.15)', 
-            padding: '40px', 
-            borderRadius: '24px', 
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+            margin: '0 auto'
           }}
         >
           <p style={{ fontSize: '20px', lineHeight: '1.8', color: 'white', fontWeight: '500', textAlign: 'center', margin: 0 }}>
-            Todos nuestros productos son importados de Estados Unidos. Son de excelente calidad, con fórmulas limpias, sin gluten, sin azúcar, libres de metales pesados, sin conservantes ni colorantes artificiales, especialmente para peques🩵
+            Todos nuestros productos son importados de Estados Unidos 🇺🇸. Son de excelente calidad, con fórmulas limpias, sin gluten, sin azúcar, libres de metales pesados, sin conservantes ni colorantes artificiales, especialmente para peques🩵
           </p>
         </motion.div>
       </div>
