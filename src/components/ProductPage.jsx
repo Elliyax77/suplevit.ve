@@ -169,35 +169,42 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                     {item.services}
                   </span>
                 )}
-                {item.brand && (
-                  <span className="badge-modern" style={{ background: '#fef3c7', color: '#92400e' }}>
-                    Marca: {item.brand}
-                  </span>
-                )}
-                {item.presentation && (
-                  <span className="badge-modern" style={{ background: '#f3e8ff', color: '#6b21a8' }}>
-                    {item.presentation}
-                  </span>
-                )}
-                {item.flavor && (
-                  <span className="badge-modern" style={{ background: '#ffe4e6', color: '#9f1239' }}>
-                    Sabor: {item.flavor}
-                  </span>
-                )}
                 {item.badges && item.badges.map((badge, idx) => (
                   <span key={idx} className="badge-modern">{badge}</span>
                 ))}
               </motion.div>
 
               {/* Main Description */}
-              <motion.p 
+              <motion.div 
                 initial={{ opacity: 0, y: 20 }} 
                 whileInView={{ opacity: 1, y: 0 }} 
                 viewport={{ once: true }}
                 className="product-detail-desc"
+                style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
               >
-                {item.description}
-              </motion.p>
+                <p>{item.description}</p>
+                
+                {item.brand && (
+                  <div>
+                    <strong style={{ color: 'var(--accent-color)', display: 'block', marginBottom: '4px' }}>Marca:</strong>
+                    <p>{item.brand}</p>
+                  </div>
+                )}
+                
+                {item.presentation && (
+                  <div>
+                    <strong style={{ color: 'var(--accent-color)', display: 'block', marginBottom: '4px' }}>Presentación:</strong>
+                    <p>{item.presentation}</p>
+                  </div>
+                )}
+                
+                {item.flavor && (
+                  <div>
+                    <strong style={{ color: 'var(--accent-color)', display: 'block', marginBottom: '4px' }}>Sabor:</strong>
+                    <p>{item.flavor}</p>
+                  </div>
+                )}
+              </motion.div>
               
               {/* Detailed Sections */}
               <div className="product-detail-sections">
