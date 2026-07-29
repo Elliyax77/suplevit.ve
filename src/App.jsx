@@ -5,6 +5,7 @@ import BenefitsSection from './components/BenefitsSection.jsx'
 import ProductCard from './components/ProductCard.jsx'
 import Cart from './components/Cart.jsx'
 import ProductPage from './components/ProductPage.jsx'
+import WelcomeModal from './components/WelcomeModal.jsx'
 import menuData from './data/menu.json'
 import { fetchProductsFromSheet } from './utils/sheets.js'
 import './index.css'
@@ -126,6 +127,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <WelcomeModal />
       {!selectedItem && (
         <TopNav 
           cartCount={totalCartItems} 
