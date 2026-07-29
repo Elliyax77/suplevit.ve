@@ -22,6 +22,7 @@ function App() {
   const [categories, setCategories] = useState(menuData.categories)
   const [isLoading, setIsLoading] = useState(true)
   const [exchangeRate, setExchangeRate] = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     // Obtener tasa BCV Euro
@@ -63,7 +64,9 @@ function App() {
   }, [theme])
 
   const handleProductClick = (item) => {
-    setSelectedItem(item)
+    setScrollPosition(window.scrollY);
+    setSelectedItem(item);
+    window.scrollTo(0, 0);
   }
 
   const handleAddToCart = (details) => {
@@ -85,7 +88,8 @@ function App() {
         }]
       }
     })
-    setSelectedItem(null)
+    setSelectedItem(null);
+    setTimeout(() => window.scrollTo(0, scrollPosition), 0);
   }
 
   const getProductTotalQty = (productId) => {
@@ -135,7 +139,10 @@ function App() {
           currency={restaurant.currency}
           exchangeRate={exchangeRate}
           cartQty={getProductTotalQty(selectedItem.id)}
-          onClose={() => setSelectedItem(null)}
+          onClose={() => {
+            setSelectedItem(null);
+            setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+          }}
           onAddToCart={handleAddToCart}
         />
       ) : (
