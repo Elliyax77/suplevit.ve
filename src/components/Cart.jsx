@@ -187,6 +187,12 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
                   🛵 Delivery
                 </button>
                 <button 
+                  className={`toggle-btn ${formData.deliveryType === 'Envío Nacional' ? 'active' : ''}`}
+                  onClick={() => setFormData({...formData, deliveryType: 'Envío Nacional'})}
+                >
+                  📦 Envío
+                </button>
+                <button 
                   className={`toggle-btn ${formData.deliveryType === 'Retiro en Tienda' ? 'active' : ''}`}
                   onClick={() => setFormData({...formData, deliveryType: 'Retiro en Tienda'})}
                 >
@@ -203,7 +209,7 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
             <div className="form-group">
               <label className="form-label">Método de Pago</label>
               <div className="payment-grid">
-                {['Efectivo', 'Pago Móvil', 'Zelle', 'Binance', 'Punto de Venta'].map(method => (
+                {['Efectivo', 'Pago Móvil', 'Zelle', 'Binance'].map(method => (
                   <button 
                     key={method}
                     className={`payment-card ${formData.payment === method ? 'active' : ''}`}

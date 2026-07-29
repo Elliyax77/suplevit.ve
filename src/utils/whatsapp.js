@@ -64,8 +64,12 @@ export function generateWhatsAppLink(cart, items, formData, restaurant, totalPri
     message += `${ePhone} ${formData.phone}\n`;
   }
   
+  const eBox = decodeURIComponent('%F0%9F%93%A6'); // 📦
+
   if (formData.deliveryType === 'Delivery (A domicilio)') {
     message += `${eScooter} Delivery\n`;
+  } else if (formData.deliveryType === 'Envío Nacional') {
+    message += `${eBox} Envío Nacional\n`;
   } else {
     message += `${eStore} Retiro en tienda\n`;
   }
