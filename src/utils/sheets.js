@@ -34,15 +34,8 @@ export const fetchProductsFromSheet = (csvUrl) => {
             // Ignorar filas sin nombre de producto
             if (!row['Producto'] || row['Producto'].trim() === '') return;
 
-            const categoryName = row['Categoría'] || 'General';
-            
-            if (!categoryMap[categoryName]) {
-              categoryMap[categoryName] = {
-                id: `c${Object.keys(categoryMap).length + 1}`,
-                name: categoryName,
-                items: []
-              };
-            }
+            const rawCategoryName = row['Categoría'] || 'General';
+            const categoryNames = rawCategoryName.split('/').map(c => c.trim()).filter(Boolean);
 
             // Procesar precios
             // Remover el símbolo $ o € y cambiar comas por puntos
@@ -88,7 +81,16 @@ export const fetchProductsFromSheet = (csvUrl) => {
               badges: row['Etiquetas'] ? row['Etiquetas'].split(',').map(i => i.trim()).filter(Boolean) : []
             };
             
-            categoryMap[categoryName].items.push(item);
+            categoryNames.forEach(categoryName => {
+              if (!categoryMap[categoryName]) {
+                categoryMap[categoryName] = {
+                  id: `c${Object.keys(categoryMap).length + 1}`,
+                  name: categoryName,
+                  items: []
+                };
+              }
+              categoryMap[categoryName].items.push(item);
+            });
           });
 
           const categories = Object.values(categoryMap);
