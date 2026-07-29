@@ -169,6 +169,21 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                     {item.services}
                   </span>
                 )}
+                {item.brand && (
+                  <span className="badge-modern" style={{ background: '#fef3c7', color: '#92400e' }}>
+                    Marca: {item.brand}
+                  </span>
+                )}
+                {item.presentation && (
+                  <span className="badge-modern" style={{ background: '#f3e8ff', color: '#6b21a8' }}>
+                    {item.presentation}
+                  </span>
+                )}
+                {item.flavor && (
+                  <span className="badge-modern" style={{ background: '#ffe4e6', color: '#9f1239' }}>
+                    Sabor: {item.flavor}
+                  </span>
+                )}
                 {item.badges && item.badges.map((badge, idx) => (
                   <span key={idx} className="badge-modern">{badge}</span>
                 ))}

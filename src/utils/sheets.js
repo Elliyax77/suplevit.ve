@@ -73,7 +73,7 @@ export const fetchProductsFromSheet = (csvUrl) => {
             const item = {
               id: `p${index}`,
               name: row['Producto'].trim(),
-              brand: '', // TODO: Pendiente por resolver con columna Marca
+              brand: row['Marca'] && row['Marca'].trim() !== '-' ? row['Marca'].trim() : '',
               stock: stock,
               priceEuro: priceEuro,
               pricePromoUsd: pricePromoUsd,
