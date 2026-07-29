@@ -88,9 +88,12 @@ function App() {
           ...details
         }]
       }
-    })
-    setSelectedItem(null);
-    setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+    });
+
+    if (selectedItem) {
+      setSelectedItem(null);
+      setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+    }
   }
 
   const getProductTotalQty = (productId) => {
