@@ -28,7 +28,22 @@ export default function WelcomeModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="modal-overlay" style={{ zIndex: 9999 }}>
+        <div 
+          className="modal-overlay" 
+          style={{ 
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+            padding: '20px'
+          }}
+        >
           <motion.div 
             className="modal-content"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -37,16 +52,19 @@ export default function WelcomeModal() {
             style={{
               padding: '32px 24px',
               maxWidth: '400px',
+              width: '100%',
               textAlign: 'center',
               borderRadius: '24px',
+              backgroundColor: '#ffffff',
+              color: '#000000',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
             }}
           >
-            <h2 style={{ fontSize: '24px', marginBottom: '16px', color: 'var(--primary-text)' }}>
+            <h2 style={{ fontSize: '24px', marginBottom: '16px', color: '#000000' }}>
               ¡Bienvenido a Suplevit! 🩵
             </h2>
             
-            <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#4b5563', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+            <div style={{ fontSize: '15px', lineHeight: '1.6', color: '#333333', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
               <p>En esta página puedes ver todos los productos que tenemos disponibles para entrega y envío inmediato‼️</p>
               
               <p>Puedes hacer tu pedido fácilmente, agrega al carrito los productos que desees, completa tus datos, selecciona cómo prefieres recibir tu producto y el método de pago🌟</p>
