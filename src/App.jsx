@@ -207,15 +207,12 @@ function App() {
               })}
             </main>
             
-            <footer className="app-footer modern-app-footer">
-              <div className="footer-content">
-                <img src="/suplevit-logo.png" alt="Suplevit Logo" className="footer-logo" />
-                <p>Cuidando el futuro, hoy.</p>
-                <div className="footer-links">
-                  <a href="#">Términos</a>
-                  <a href="#">Privacidad</a>
-                  <a href="#">Contacto</a>
-                </div>
+            <footer className="app-footer" style={{ padding: '24px 20px', borderTop: '1px dashed var(--border-color)' }}>
+              <div className="footer-bottom" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', textAlign: 'center' }}>
+                <p className="copyright" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>© {new Date().getFullYear()} Suplevit. Todos los derechos reservados.</p>
+                <p className="developer-credit" style={{ fontSize: '13px', color: 'var(--text-secondary)', opacity: 0.8 }}>
+                  Desarrollado por <a href="https://wa.me/584244980621?text=Hola%2C%20vi%20tu%20trabajo%20y%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20desarrollo%20de%20p%C3%A1ginas%20web%20para%20mi%20negocio." target="_blank" rel="noopener noreferrer" className="developer-link" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--primary-color)'; e.currentTarget.style.textDecoration = 'underline'; }} onMouseLeave={(e) => { e.currentTarget.style.color = 'inherit'; e.currentTarget.style.textDecoration = 'none'; }}><strong style={{ color: 'var(--text-primary)' }}>Elías Espinal</strong></a>
+                </p>
               </div>
             </footer>
           </div>
