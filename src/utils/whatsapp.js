@@ -28,13 +28,13 @@ export function generateWhatsAppLink(cart, items, formData, restaurant, totalPri
   message += `*Resumen del pedido:*\n\n`;
 
   const isUsdPayment = ['Efectivo', 'Zelle', 'Binance'].includes(formData.payment);
-  const currencySymbol = isUsdPayment ? '$' : '€';
+  const currencySymbol = '$';
 
   cart.forEach((cartItem) => {
     const item = items.find(i => i.id === cartItem.productId);
     if (item) {
-      const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
-      const itemCurrency = isUsdPayment && item.pricePromoUsd > 0 ? '$' : '€';
+      const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceBcv;
+      const itemCurrency = '$';
       const itemTotal = itemActivePrice * cartItem.quantity;
       message += `*_${cartItem.quantity}x - ${item.name.toUpperCase()}_* (${itemCurrency}${itemTotal.toFixed(2)})\n`;
       
@@ -52,7 +52,7 @@ export function generateWhatsAppLink(cart, items, formData, restaurant, totalPri
   message += `${eMoney} *Total:* ${currencySymbol}${totalPrice.toFixed(2)}`;
   if (!isUsdPayment && exchangeRate) {
     message += ` (Bs. ${(totalPrice * exchangeRate).toFixed(2)})\n`;
-    message += `   Tasa (Euro): Bs. ${exchangeRate} / EUR\n`;
+    message += `   Tasa (BCV): Bs. ${exchangeRate} / USD\n`;
   } else {
     message += `\n`;
   }

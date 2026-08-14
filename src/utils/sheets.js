@@ -37,14 +37,13 @@ export const fetchProductsFromSheet = (csvUrl) => {
             const rawCategoryName = row['Categoría'] || 'General';
             const categoryNames = rawCategoryName.split('/').map(c => c.trim()).filter(Boolean);
 
-            // Procesar precios
             // Remover el símbolo $ o € y cambiar comas por puntos
             const parsePrice = (priceStr) => {
               if (!priceStr) return 0;
               return parseFloat(priceStr.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
             };
 
-            const priceEuro = parsePrice(row['Precio Bs (tasa euro)']);
+            const priceBcv = parsePrice(row['Precio Bs (tasa euro)'] || row['Precio Bs (tasa bcv)'] || row['Precio']);
             const pricePromoUsd = parsePrice(row['Precio (Efectivo-Zelle-Binance)']);
 
             const stock = parseInt(row['Cantidad'], 10) || 0;
@@ -68,9 +67,9 @@ export const fetchProductsFromSheet = (csvUrl) => {
               name: row['Producto'].trim(),
               brand: row['Marca'] && row['Marca'].trim() !== '-' ? row['Marca'].trim() : '',
               stock: stock,
-              priceEuro: priceEuro,
+              priceBcv: priceBcv,
               pricePromoUsd: pricePromoUsd,
-              price: priceEuro, // Usaremos el priceEuro como principal
+              price: priceBcv, // Usaremos el priceBcv como principal
               description: row['Descripción'] || '',
               image: image,
               nutritionImage: nutritionImage,

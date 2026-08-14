@@ -269,7 +269,7 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Precio Total:</span>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   <span style={{ fontSize: '24px', fontWeight: '900' }}>
-                    €{(item.priceEuro * quantity).toFixed(2)}
+                    ${(item.priceBcv * quantity).toFixed(2)}
                   </span>
                   {item.pricePromoUsd > 0 && (
                     <span style={{ fontSize: '14px', color: '#facc15', fontWeight: 'bold' }}>

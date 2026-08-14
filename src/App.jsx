@@ -26,8 +26,8 @@ function App() {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
-    // Obtener tasa BCV Euro
-    fetch('https://ve.dolarapi.com/v1/euros/oficial')
+    // Obtener tasa BCV Dolar
+    fetch('https://ve.dolarapi.com/v1/dolares/oficial')
       .then(response => response.json())
       .then(data => {
         if (data && data.promedio) {

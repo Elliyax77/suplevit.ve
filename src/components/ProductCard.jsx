@@ -21,7 +21,7 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
         <div className="product-footer">
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <span className="product-price">
-              €{item.priceEuro.toFixed(2)}
+              ${item.priceBcv.toFixed(2)}
             </span>
 
           </div>

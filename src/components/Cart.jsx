@@ -20,7 +20,7 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
   const totalPrice = cart.reduce((sum, cartItem) => {
     const item = items.find(i => i.id === cartItem.productId);
     if (!item) return sum;
-    const activePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
+    const activePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceBcv;
     return sum + (activePrice * cartItem.quantity);
   }, 0);
 
@@ -53,8 +53,8 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
               {cart.map((cartItem) => {
                 const item = items.find(i => i.id === cartItem.productId);
                 if (!item) return null;
-                const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceEuro;
-                const priceCurrency = isUsdPayment && item.pricePromoUsd > 0 ? '$' : '€';
+                const itemActivePrice = isUsdPayment && item.pricePromoUsd > 0 ? item.pricePromoUsd : item.priceBcv;
+                const priceCurrency = '$';
 
                 return (
                   <div key={cartItem.cartItemId} className="cart-item-row-container" style={{ borderBottom: '1px dashed var(--border-color)', paddingBottom: '12px' }}>
@@ -117,7 +117,7 @@ export default function Cart({ cart, items, currency, restaurant, onUpdateQty, o
               <div className="cart-item-row" style={{ fontWeight: 'bold', fontSize: '18px', marginTop: '16px', borderTop: '2px solid var(--border-color)', paddingTop: '16px' }}>
                 <span>Total a pagar</span>
                 <div style={{ textAlign: 'right' }}>
-                  <div>{isUsdPayment ? '$' : '€'}{totalPrice.toFixed(2)}</div>
+                  <div>${totalPrice.toFixed(2)}</div>
                   {(!isUsdPayment && exchangeRate) && <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.9)', marginTop: '4px', fontWeight: 'bold' }}>Bs {(totalPrice * exchangeRate).toFixed(2)}</div>}
                 </div>
               </div>
