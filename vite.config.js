@@ -6,5 +6,9 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  cacheDir: path.join(os.tmpdir(), 'vite-cache-suplevit')
+  cacheDir: path.join(os.tmpdir(), 'vite-cache-suplevit'),
+  build: {
+    emptyOutDir: false
+  }
 })
+

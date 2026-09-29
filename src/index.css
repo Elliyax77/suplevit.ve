@@ -27,6 +27,12 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+}
+
 body {
   font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--primary-color);
@@ -36,6 +42,10 @@ body {
   background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.5;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -64,7 +74,10 @@ button {
   background-color: transparent;
   padding-bottom: 120px; /* Space for floating cart */
   position: relative;
+  overflow-x: clip;
+  width: 100%;
 }
+
 
 /* Hero Parallax */
 .hero-section {
