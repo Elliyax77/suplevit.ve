@@ -48,19 +48,21 @@ export const fetchProductsFromSheet = (csvUrl) => {
 
             const stock = parseInt(row['Cantidad'], 10) || 0;
 
-            // Procesar imagenes (pueden venir con ruta local como C:\...\imagen.png y con comillas extras)
-            const extractFilename = (path) => {
+            // Procesar imagenes (pueden venir con ruta local como C:\...\imagen.png, comillas extras o URL directa)
+            const resolveImageUrl = (path, folder) => {
               if (!path) return '';
-              const cleanPath = path.replace(/['"]/g, ''); // Eliminar comillas dobles o simples extra
+              const cleanPath = path.replace(/['"]/g, '').trim();
+              if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
+                return cleanPath;
+              }
               const parts = cleanPath.split(/[\/\\]/);
-              return parts[parts.length - 1];
+              const filename = parts[parts.length - 1].trim();
+              if (!filename) return '';
+              return `/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`;
             };
 
-            const imageFile = extractFilename(row['Imagen sin fondo']);
-            const image = imageFile ? `/imagenes%20suplevit/${encodeURIComponent(imageFile)}` : '';
-            
-            const nutritionFile = extractFilename(row['Tabla Nutricional']);
-            const nutritionImage = nutritionFile ? `/tablas%20nutricionales/${encodeURIComponent(nutritionFile)}` : '';
+            const image = resolveImageUrl(row['Imagen sin fondo'], 'imagenes suplevit');
+            const nutritionImage = resolveImageUrl(row['Tabla Nutricional'], 'tablas nutricionales');
 
             const item = {
               id: `p${index}`,

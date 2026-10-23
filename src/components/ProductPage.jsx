@@ -8,6 +8,27 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
   const [showNutrition, setShowNutrition] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const containerRef = useRef(null);
+
+  const currentImageTarget = showNutrition && item.nutritionImage ? item.nutritionImage : item.image;
+  const [detailImgSrc, setDetailImgSrc] = useState(currentImageTarget);
+  const [detailImgError, setDetailImgError] = useState(false);
+
+  useEffect(() => {
+    setDetailImgSrc(showNutrition && item.nutritionImage ? item.nutritionImage : item.image);
+    setDetailImgError(false);
+  }, [item, showNutrition]);
+
+  const handleDetailImgError = () => {
+    if (detailImgSrc && detailImgSrc.includes('Lifebale')) {
+      setDetailImgSrc(detailImgSrc.replace('Lifebale', 'Lifeable'));
+      return;
+    }
+    if (detailImgSrc && detailImgSrc.includes('Lifeable%20Kids.png')) {
+      setDetailImgSrc(detailImgSrc.replace('Lifeable%20Kids.png', 'Vitamina%20B6%20Lifebale%20Kids.png'));
+      return;
+    }
+    setDetailImgError(true);
+  };
   
   const { scrollYProgress } = useScroll({ container: containerRef });
   
@@ -69,16 +90,42 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
             >
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: isDesktop ? 0 : '20px 0', paddingBottom: '20px' }}>
                 <motion.div style={{ scale: imageScaleScroll, display: 'flex', justifyContent: 'center', width: '100%', height: '300px' }}>
-                  <motion.img 
-                    key={showNutrition ? 'nutrition' : 'product'}
-                    initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
-                    animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                    transition={{ type: 'spring' }}
-                    src={showNutrition && item.nutritionImage ? item.nutritionImage : item.image} 
-                    alt={item.name} 
-                    className="product-hero-img"
-                    style={{ objectFit: 'contain', width: '100%', height: '100%' }}
-                  />
+                  {detailImgError || !detailImgSrc ? (
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      borderRadius: '24px',
+                      border: '1px dashed rgba(255, 255, 255, 0.25)',
+                      padding: '24px'
+                    }}>
+                      <img 
+                        src="/suplevit-logo.png" 
+                        alt="Suplevit" 
+                        style={{ maxHeight: '90px', maxWidth: '80%', objectFit: 'contain', opacity: 0.85 }} 
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }} 
+                      />
+                      <span style={{ color: 'rgba(255, 255, 255, 0.7)', marginTop: '12px', fontSize: '13px', fontWeight: 600 }}>
+                        {showNutrition ? 'Tabla nutricional no disponible' : 'Imagen no disponible'}
+                      </span>
+                    </div>
+                  ) : (
+                    <motion.img 
+                      key={showNutrition ? 'nutrition' : 'product'}
+                      initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
+                      animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                      transition={{ type: 'spring' }}
+                      src={detailImgSrc} 
+                      alt={item.name} 
+                      className="product-hero-img"
+                      style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                      onError={handleDetailImgError}
+                    />
+                  )}
                 </motion.div>
                 
               </div>
