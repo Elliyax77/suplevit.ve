@@ -38,8 +38,8 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const indicatorPointerEvents = useTransform(scrollYProgress, [0, 0.1], ['auto', 'none']);
   
-  // On mobile, the image starts slightly larger (30%) and scales down to normal size
-  const imageScaleScroll = useTransform(scrollYProgress, [0, 0.15], [isDesktop ? 1 : 1.3, 1]);
+  // On mobile, gently scale down on scroll (1 to 0.9) to provide depth without overflowing
+  const imageScaleScroll = useTransform(scrollYProgress, [0, 0.15], [1, isDesktop ? 1 : 0.9]);
   
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 768);
@@ -88,8 +88,11 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
               className="product-left-content"
               style={{ x: isDesktop ? xOffset : 0 }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: isDesktop ? 0 : '20px 0', paddingBottom: '20px' }}>
-                <motion.div style={{ scale: imageScaleScroll, display: 'flex', justifyContent: 'center', width: '100%', height: '300px' }}>
+              <div className="product-hero-image-wrapper">
+                <motion.div 
+                  className="product-hero-image-container"
+                  style={{ scale: isDesktop ? 1 : imageScaleScroll }}
+                >
                   {detailImgError || !detailImgSrc ? (
                     <div style={{
                       display: 'flex',
@@ -122,12 +125,10 @@ export default function ProductPage({ item, currency, exchangeRate, cartQty = 0,
                       src={detailImgSrc} 
                       alt={item.name} 
                       className="product-hero-img"
-                      style={{ objectFit: 'contain', width: '100%', height: '100%' }}
                       onError={handleDetailImgError}
                     />
                   )}
                 </motion.div>
-                
               </div>
               <motion.h1 
                 initial={{ y: 20, opacity: 0 }}

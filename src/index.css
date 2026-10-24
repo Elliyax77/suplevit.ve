@@ -346,22 +346,25 @@ button {
   justify-content: center;
   position: relative;
   flex-shrink: 0;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .product-image {
-  width: 100%;
-  height: 100%;
-  max-height: 180px;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   background-color: transparent;
   padding: 0;
   flex-shrink: 0;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.1) translateY(-5px);
+  transform: scale(1.08) translateY(-4px);
 }
 
 @media (min-width: 600px) {
@@ -370,9 +373,7 @@ button {
   }
   .product-image-wrapper {
     height: 220px;
-  }
-  .product-image {
-    max-height: 220px;
+    padding: 12px;
   }
 }
 
@@ -386,9 +387,7 @@ button {
   }
   .product-image-wrapper {
     height: 140px;
-  }
-  .product-image {
-    max-height: 140px;
+    padding: 6px;
   }
   .product-name {
     font-size: 14px;
@@ -1253,27 +1252,56 @@ button {
   justify-content: center;
   align-items: center;
   min-height: 40vh;
-  padding: 40px 20px;
+  padding: 20px;
+}
+
+.product-hero-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.product-hero-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  height: 260px;
+  position: relative;
 }
 
 .product-hero-img {
-  height: 250px;
+  max-height: 100%;
+  max-width: 100%;
   width: auto;
+  height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
-  margin-bottom: 24px;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.35));
+  margin: 0 auto;
 }
 
 .product-hero-title {
-  font-size: 28px;
+  font-size: 26px;
   text-align: center;
-  margin-bottom: 24px;
+  margin: 16px 0 12px 0;
+  padding: 0 16px;
   font-family: 'Fredoka', sans-serif;
-  line-height: 1.2;
+  line-height: 1.25;
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+  max-width: 90%;
+  word-break: break-word;
+  text-wrap: balance;
 }
 
 .scroll-down-indicator {
-  margin-top: 40px;
+  margin-top: 16px;
 }
 
 .product-split-right {
@@ -1295,8 +1323,9 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 0;
-  min-height: 100vh; /* Takes full screen initially so no info is seen until scrolled */
+  padding: 70px 16px 20px; /* Space for the top back button */
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .product-split-layout.mobile .product-left-content {
@@ -1305,15 +1334,38 @@ button {
   justify-content: center;
   align-items: center;
   width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.product-split-layout.mobile .product-hero-image-container {
+  height: 250px;
+  max-width: 270px;
 }
 
 .product-split-layout.mobile .product-hero-img {
-  height: 300px;
+  max-height: 250px;
 }
 
 .product-split-layout.mobile .product-split-right {
   position: relative;
   /* Removed the background, backdrop-filter, border-radius and negative margin to make it flow naturally below */
+}
+
+/* Mobile height adjustments for small screens (e.g. iPhone SE) */
+@media (max-height: 700px) and (max-width: 767px) {
+  .product-split-layout.mobile .product-hero-image-container {
+    height: 210px;
+    max-width: 230px;
+  }
+  .product-hero-title {
+    font-size: 22px;
+    margin: 10px 0 8px 0;
+  }
+  .scroll-down-indicator {
+    margin-top: 8px;
+  }
 }
 
 /* Desktop Overrides */
@@ -1337,12 +1389,18 @@ button {
     min-height: 100vh;
   }
 
-  .product-split-layout.desktop .product-hero-img {
+  .product-split-layout.desktop .product-hero-image-container {
     height: 400px;
+    max-width: 400px;
+  }
+
+  .product-split-layout.desktop .product-hero-img {
+    max-height: 400px;
   }
 
   .product-split-layout.desktop .product-hero-title {
     font-size: 3.5rem;
+    margin-top: 24px;
   }
 
   .product-split-layout.desktop .product-split-right {

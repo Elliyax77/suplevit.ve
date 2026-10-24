@@ -44,7 +44,7 @@ export default function ProductCard({ item, currency, cartQty, onClick, exchange
         border: item.previousPrice ? '2px solid #facc15' : 'none'
       }}
     >
-      <div className="product-image-wrapper" style={{ position: 'relative', width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="product-image-wrapper">
         {hasError || !imgSrc ? (
           <div className="product-image-fallback" style={{
             width: '100%',
