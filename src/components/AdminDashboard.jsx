@@ -38,6 +38,7 @@ import { useSuplevitData } from '../context/SuplevitDataContext';
 import './AdminDashboard.css';
 
 const MASTER_PASSWORD = 'suplevit2026';
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutos (cierre de sesión automático)
 
 export default function AdminDashboard({ isOpen, onClose }) {
   const {
@@ -57,9 +58,18 @@ export default function AdminDashboard({ isOpen, onClose }) {
     importBackupData
   } = useSuplevitData();
 
-  // 1. Autenticación y Seguridad
+  // 1. Autenticación y Seguridad con expiración de 30 minutos
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('suplevit_dev_session') === 'active';
+    const active = sessionStorage.getItem('suplevit_dev_session') === 'active';
+    const expiresAt = sessionStorage.getItem('suplevit_dev_session_expires');
+    if (active && expiresAt) {
+      if (Date.now() < parseInt(expiresAt, 10)) {
+        return true;
+      }
+    }
+    sessionStorage.removeItem('suplevit_dev_session');
+    sessionStorage.removeItem('suplevit_dev_session_expires');
+    return false;
   });
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -131,6 +141,26 @@ export default function AdminDashboard({ isOpen, onClose }) {
     }
   }, [lockoutTimer]);
 
+  // Comprobación de expiración de sesión cada 10 segundos (30 min)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const checkSessionExpiration = () => {
+      const expiresAt = sessionStorage.getItem('suplevit_dev_session_expires');
+      if (!expiresAt || Date.now() >= parseInt(expiresAt, 10)) {
+        sessionStorage.removeItem('suplevit_dev_session');
+        sessionStorage.removeItem('suplevit_dev_session_expires');
+        setIsAuthenticated(false);
+        setAuthError('Tu sesión ha expirado por seguridad tras 30 minutos. Por favor ingresa la clave nuevamente.');
+        showToast('Sesión cerrada por límite de 30 minutos');
+      }
+    };
+
+    checkSessionExpiration();
+    const interval = setInterval(checkSessionExpiration, 10000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
   // Sincronizar datos de tienda si cambian
   useEffect(() => {
     setStoreForm({
@@ -191,11 +221,13 @@ export default function AdminDashboard({ isOpen, onClose }) {
 
     if (passwordInput.trim() === MASTER_PASSWORD) {
       setIsAuthenticated(true);
+      const expiresAt = Date.now() + SESSION_TIMEOUT_MS;
       sessionStorage.setItem('suplevit_dev_session', 'active');
+      sessionStorage.setItem('suplevit_dev_session_expires', expiresAt.toString());
       setAuthError('');
       setPasswordInput('');
       setAttempts(0);
-      showToast('Sesión de Desarrollador iniciada con éxito');
+      showToast('Sesión iniciada. Expira automáticamente en 30 minutos.');
     } else {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
@@ -212,6 +244,7 @@ export default function AdminDashboard({ isOpen, onClose }) {
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('suplevit_dev_session');
+    sessionStorage.removeItem('suplevit_dev_session_expires');
     showToast('Sesión cerrada correctamente');
   };
 
@@ -491,7 +524,7 @@ export default function AdminDashboard({ isOpen, onClose }) {
 
             <div className="auth-card-footer">
               <ShieldCheck size={14} />
-              <span>Acceso restringido para administradores autorizados</span>
+              <span>Acceso restringido • Cierre de sesión automático tras 30 minutos</span>
             </div>
           </div>
         </div>

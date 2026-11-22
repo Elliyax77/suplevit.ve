@@ -36,7 +36,7 @@ El panel no está a la vista del cliente común. Se puede acceder a través de 3
 ### 2.2. Seguridad & Bóveda de Autenticación
 - **Contraseña Maestra:** `suplevit2026`
 - **Protección contra Fuerza Bruta:** Bloqueo temporal por 30 segundos tras 5 intentos fallidos con cuenta regresiva.
-- **Persistencia de Sesión:** Guarda el token en `sessionStorage` (`suplevit_dev_session`), manteniendo la sesión activa mientras la pestaña esté abierta.
+- **Expiración de Sesión:** Cierre de sesión automático tras **30 minutos**. Al transcurrir ese tiempo, o al cerrar la pestaña o pulsar "Cerrar Sesión", la sesión expira y se solicita la contraseña nuevamente.
 - **Visor de Contraseña:** Toggle con icono de ojo para mostrar u ocultar caracteres.
 
 ---
