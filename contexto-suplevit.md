@@ -46,6 +46,17 @@ El panel no está a la vista del cliente común. Se puede acceder a través de 3
 #### 💊 1. Suplementos & Productos (Catálogo Completo)
 - **Buscador predictivo:** Filtra en tiempo real por nombre del producto, marca (ej. Culturelle, Lifeable, Dr. Moritz, Triquetra) o ingredientes.
 - **Filtro de Categorías:** Chips interactivos para filtrar por categoría o ver el total.
+- **Sistema de Ordenamiento Múltiple (Nuevo):**
+  - Selector con múltiples criterios de ordenamiento en vivo:
+    - 🔤 **Nombre: A → Z** y **Nombre: Z → A**
+    - 💲 **Precio: Menor a Mayor** y **Precio: Mayor a Menor**
+    - 📦 **Stock: Mayor Disponibilidad**
+    - ⚠️ **Stock: Menor / Agotados Primero** (ideal para inventario y reposición)
+    - 🏷️ **Marca: A → Z**
+    - 🔄 **Orden Original (Guardado)**
+  - **Pills de Orden Rápido:** Botones de acceso directo con 1 clic para alternar A-Z, Precio ↑↓, Mayor Stock y Agotados.
+  - **Reordenamiento Manual (Flechas Subir / Bajar):** Cada tarjeta cuenta con botones para mover un suplemento hacia arriba o abajo en la lista.
+  - **Fijar Orden en la Tienda Pública:** Botón con pin (`📌`) que aplica el ordenamiento seleccionado a todas las categorías del catálogo persistido, haciendo que los clientes en la tienda pública vean los productos en ese mismo orden.
 - **Creación & Edición Modal:**
   - Nombre del suplemento, marca y categoría.
   - Control de Stock (indicador verde "En Stock" o rojo "Agotado").

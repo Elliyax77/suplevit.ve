@@ -32,7 +32,13 @@ import {
   Store,
   ShieldCheck,
   Pill,
-  FolderPlus
+  FolderPlus,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Pin,
+  ArrowDownAZ,
+  ArrowUpAZ
 } from 'lucide-react';
 import { useSuplevitData } from '../context/SuplevitDataContext';
 import './AdminDashboard.css';
@@ -53,6 +59,8 @@ export default function AdminDashboard({ isOpen, onClose }) {
     updateCategories,
     addCategory,
     deleteCategory,
+    moveProductOrder,
+    applySortingToCategories,
     resetToDefaults,
     exportBackupData,
     importBackupData
@@ -77,10 +85,11 @@ export default function AdminDashboard({ isOpen, onClose }) {
   const [attempts, setAttempts] = useState(0);
   const [lockoutTimer, setLockoutTimer] = useState(0);
 
-  // 2. Navegación
+  // 2. Navegación & Ordenamiento
   const [activeTab, setActiveTab] = useState('productos'); // 'productos' | 'imagenes' | 'categorias' | 'tienda' | 'respaldos'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCatFilter, setSelectedCatFilter] = useState('ALL');
+  const [sortBy, setSortBy] = useState('default'); // 'default' | 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'stock-desc' | 'stock-asc' | 'brand-asc'
 
   // 3. Modal de Producto (Edición / Creación)
   const [editingProduct, setEditingProduct] = useState(null);
@@ -191,9 +200,9 @@ export default function AdminDashboard({ isOpen, onClose }) {
     return Array.from(map.values());
   }, [categories]);
 
-  // Filtrado de productos
+  // Filtrado y ordenamiento de productos
   const filteredProducts = useMemo(() => {
-    return allProducts.filter(item => {
+    let list = allProducts.filter(item => {
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.brand && item.brand.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -204,7 +213,43 @@ export default function AdminDashboard({ isOpen, onClose }) {
 
       return matchesSearch && matchesCat;
     });
-  }, [allProducts, searchQuery, selectedCatFilter]);
+
+    switch (sortBy) {
+      case 'name-asc':
+        return [...list].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'es', { sensitivity: 'base' }));
+      case 'name-desc':
+        return [...list].sort((a, b) => (b.name || '').localeCompare(a.name || '', 'es', { sensitivity: 'base' }));
+      case 'price-asc':
+        return [...list].sort((a, b) => (Number(a.priceBcv || a.price) || 0) - (Number(b.priceBcv || b.price) || 0));
+      case 'price-desc':
+        return [...list].sort((a, b) => (Number(b.priceBcv || b.price) || 0) - (Number(a.priceBcv || a.price) || 0));
+      case 'stock-desc':
+        return [...list].sort((a, b) => (Number(b.stock) || 0) - (Number(a.stock) || 0));
+      case 'stock-asc':
+        return [...list].sort((a, b) => (Number(a.stock) || 0) - (Number(b.stock) || 0));
+      case 'brand-asc':
+        return [...list].sort((a, b) => (a.brand || '').localeCompare(b.brand || '', 'es', { sensitivity: 'base' }));
+      default:
+        return list;
+    }
+  }, [allProducts, searchQuery, selectedCatFilter, sortBy]);
+
+  // Aplicar el orden actual a todas las categorías para la tienda pública
+  const handleApplySortToStore = () => {
+    if (sortBy === 'default') {
+      showToast('Selecciona un criterio de ordenamiento primero');
+      return;
+    }
+    applySortingToCategories(sortBy);
+    showToast('¡Orden fijado permanentemente en la tienda pública!');
+  };
+
+  // Mover producto hacia arriba o abajo en su categoría
+  const handleMoveProduct = (productId, direction) => {
+    moveProductOrder(productId, direction);
+    setSortBy('default');
+    showToast(`Producto movido hacia ${direction === 'up' ? 'arriba' : 'abajo'}`);
+  };
 
   // Disparar mensaje Toast
   const showToast = (msg) => {
@@ -684,6 +729,98 @@ export default function AdminDashboard({ isOpen, onClose }) {
                   </button>
                 </div>
 
+                {/* BARRA DE ORDENAMIENTO DE PRODUCTOS */}
+                <div className="sorting-toolbar-card">
+                  <div className="sorting-left-controls">
+                    <div className="sort-select-box">
+                      <ArrowUpDown size={16} className="sort-icon" />
+                      <span className="sort-label">Ordenar:</span>
+                      <select 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="sort-dropdown-select"
+                      >
+                        <option value="default">🔄 Orden Original (Guardado)</option>
+                        <option value="name-asc">🔤 Nombre: A → Z</option>
+                        <option value="name-desc">🔠 Nombre: Z → A</option>
+                        <option value="price-asc">💲 Precio: Menor a Mayor</option>
+                        <option value="price-desc">💰 Precio: Mayor a Menor</option>
+                        <option value="stock-desc">📦 Stock: Mayor Disponibilidad</option>
+                        <option value="stock-asc">⚠️ Stock: Menor / Agotados Primero</option>
+                        <option value="brand-asc">🏷️ Marca: A → Z</option>
+                      </select>
+                    </div>
+
+                    {/* Botones de orden rápido */}
+                    <div className="quick-sort-pills">
+                      <button 
+                        type="button"
+                        className={`quick-sort-btn ${sortBy === 'name-asc' || sortBy === 'name-desc' ? 'active' : ''}`}
+                        onClick={() => setSortBy(sortBy === 'name-asc' ? 'name-desc' : 'name-asc')}
+                        title="Ordenar por Nombre (A-Z / Z-A)"
+                      >
+                        <ArrowDownAZ size={14} />
+                        <span>Nombre {sortBy === 'name-asc' ? '(A-Z)' : sortBy === 'name-desc' ? '(Z-A)' : ''}</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        className={`quick-sort-btn ${sortBy === 'price-asc' || sortBy === 'price-desc' ? 'active' : ''}`}
+                        onClick={() => setSortBy(sortBy === 'price-asc' ? 'price-desc' : 'price-asc')}
+                        title="Ordenar por Precio (Menor a Mayor / Mayor a Menor)"
+                      >
+                        <DollarSign size={14} />
+                        <span>Precio {sortBy === 'price-asc' ? '↑' : sortBy === 'price-desc' ? '↓' : ''}</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        className={`quick-sort-btn ${sortBy === 'stock-desc' ? 'active' : ''}`}
+                        onClick={() => setSortBy('stock-desc')}
+                        title="Ver productos con mayor disponibilidad primero"
+                      >
+                        <Layers size={14} />
+                        <span>Mayor Stock</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        className={`quick-sort-btn ${sortBy === 'stock-asc' ? 'active' : ''}`}
+                        onClick={() => setSortBy('stock-asc')}
+                        title="Ver productos con bajo inventario o agotados primero"
+                      >
+                        <AlertTriangle size={14} />
+                        <span>Agotados 1°</span>
+                      </button>
+
+                      {sortBy !== 'default' && (
+                        <button 
+                          type="button"
+                          className="quick-sort-btn reset-sort"
+                          onClick={() => setSortBy('default')}
+                          title="Restablecer al orden original guardado"
+                        >
+                          <RotateCcw size={13} />
+                          <span>Restablecer</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="sorting-right-controls">
+                    <button
+                      type="button"
+                      className={`btn-apply-order ${sortBy === 'default' ? 'disabled' : ''}`}
+                      onClick={handleApplySortToStore}
+                      disabled={sortBy === 'default'}
+                      title="Fija este orden para que los clientes lo vean así en la tienda"
+                    >
+                      <Pin size={15} />
+                      <span>Fijar este orden en la tienda</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Grid de Productos */}
                 {filteredProducts.length === 0 ? (
                   <div className="empty-state-card">
@@ -777,6 +914,25 @@ export default function AdminDashboard({ isOpen, onClose }) {
                             <Edit3 size={15} />
                             <span>Editar</span>
                           </button>
+
+                          <div className="reorder-arrows-group">
+                            <button
+                              type="button"
+                              className="btn-card-action btn-reorder"
+                              onClick={() => handleMoveProduct(item.id, 'up')}
+                              title="Subir producto una posición"
+                            >
+                              <ArrowUp size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-card-action btn-reorder"
+                              onClick={() => handleMoveProduct(item.id, 'down')}
+                              title="Bajar producto una posición"
+                            >
+                              <ArrowDown size={14} />
+                            </button>
+                          </div>
 
                           <button
                             className="btn-card-action btn-copy"

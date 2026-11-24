@@ -572,6 +572,165 @@
 }
 
 /* ============================================================== */
+/* 4.1. BARRA DE ORDENAMIENTO DE PRODUCTOS                       */
+/* ============================================================== */
+
+.sorting-toolbar-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #172033;
+  border: 1px solid rgba(93, 147, 225, 0.2);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.sorting-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.sort-select-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #0F172A;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.35rem 0.75rem;
+}
+
+.sort-icon {
+  color: #5D93E1;
+}
+
+.sort-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sort-dropdown-select {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.sort-dropdown-select option {
+  background: #1E293B;
+  color: #FFFFFF;
+}
+
+.quick-sort-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.quick-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #CBD5E1;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-sort-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+
+.quick-sort-btn.active {
+  background: rgba(93, 147, 225, 0.2);
+  border-color: #5D93E1;
+  color: #93C5FD;
+}
+
+.quick-sort-btn.reset-sort {
+  color: #FBBF24;
+  border-color: rgba(251, 191, 36, 0.25);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.quick-sort-btn.reset-sort:hover {
+  background: rgba(251, 191, 36, 0.18);
+  color: #FCD34D;
+}
+
+.sorting-right-controls {
+  display: flex;
+  align-items: center;
+}
+
+.btn-apply-order {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-apply-order:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.28);
+  color: #FFFFFF;
+  border-color: #34D399;
+}
+
+.btn-apply-order.disabled,
+.btn-apply-order:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #64748B;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.reorder-arrows-group {
+  display: flex;
+  gap: 2px;
+}
+
+.btn-card-action.btn-reorder {
+  padding: 0.45rem 0.5rem;
+  color: #94A3B8;
+}
+
+.btn-card-action.btn-reorder:hover {
+  background: rgba(93, 147, 225, 0.2);
+  color: #93C5FD;
+  border-color: rgba(93, 147, 225, 0.4);
+}
+
+/* ============================================================== */
 /* 5. PRODUCT ADMIN GRID & CARDS                                  */
 /* ============================================================== */
 
@@ -1811,5 +1970,38 @@
 
   .img-card-columns {
     grid-template-columns: 1fr;
+  }
+
+  .sorting-toolbar-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .sorting-left-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sort-select-box {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sort-dropdown-select {
+    flex: 1;
+  }
+
+  .quick-sort-pills {
+    justify-content: flex-start;
+  }
+
+  .sorting-right-controls {
+    width: 100%;
+  }
+
+  .btn-apply-order {
+    width: 100%;
+    justify-content: center;
   }
 }

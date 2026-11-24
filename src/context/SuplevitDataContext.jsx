@@ -221,6 +221,65 @@ export function SuplevitDataProvider({ children }) {
     persistData(restaurant, theme, nextCats);
   };
 
+  // Mover producto hacia arriba o hacia abajo en el orden de la categoría
+  const moveProductOrder = (productId, direction) => {
+    setCategories(prevCats => {
+      const nextCats = prevCats.map(cat => {
+        const index = cat.items.findIndex(item => item.id === productId);
+        if (index === -1) return cat;
+
+        const newItems = [...cat.items];
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= newItems.length) return cat;
+
+        const [movedItem] = newItems.splice(index, 1);
+        newItems.splice(targetIndex, 0, movedItem);
+
+        return {
+          ...cat,
+          items: newItems
+        };
+      });
+
+      persistData(restaurant, theme, nextCats);
+      return nextCats;
+    });
+  };
+
+  // Aplicar un criterio de ordenamiento a todas las categorías y guardarlo permanentemente
+  const applySortingToCategories = (criteria) => {
+    setCategories(prevCats => {
+      const sortFn = (a, b) => {
+        switch (criteria) {
+          case 'name-asc':
+            return (a.name || '').localeCompare(b.name || '', 'es', { sensitivity: 'base' });
+          case 'name-desc':
+            return (b.name || '').localeCompare(a.name || '', 'es', { sensitivity: 'base' });
+          case 'price-asc':
+            return (Number(a.priceBcv || a.price) || 0) - (Number(b.priceBcv || b.price) || 0);
+          case 'price-desc':
+            return (Number(b.priceBcv || b.price) || 0) - (Number(a.priceBcv || a.price) || 0);
+          case 'stock-desc':
+            return (Number(b.stock) || 0) - (Number(a.stock) || 0);
+          case 'stock-asc':
+            return (Number(a.stock) || 0) - (Number(b.stock) || 0);
+          case 'brand-asc':
+            return (a.brand || '').localeCompare(b.brand || '', 'es', { sensitivity: 'base' });
+          default:
+            return 0;
+        }
+      };
+
+      const nextCats = prevCats.map(cat => ({
+        ...cat,
+        items: [...cat.items].sort(sortFn)
+      }));
+
+      persistData(restaurant, theme, nextCats);
+      return nextCats;
+    });
+  };
+
   const resetToDefaults = async () => {
     localStorage.removeItem(STORAGE_KEY);
     setHasCustomEdits(false);
@@ -285,6 +344,8 @@ export function SuplevitDataProvider({ children }) {
       updateCategories,
       addCategory,
       deleteCategory,
+      moveProductOrder,
+      applySortingToCategories,
       resetToDefaults,
       exportBackupData,
       importBackupData
